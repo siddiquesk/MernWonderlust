@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
+
 function ShowListing() {
-  const { id } = useParams(); // Get the listing ID from the URL
-  const [listing, setListing] = useState([]);
+  const { id } = useParams();
+  const [listing, setListing] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -12,7 +13,6 @@ function ShowListing() {
         const response = await axios.get(
           `http://localhost:8000/api/v1/listings/${id}`
         );
-        console.log("Fetched listing:", response.data);
         setListing(response.data);
       } catch (error) {
         console.error("Error fetching listing:", error);
@@ -22,11 +22,10 @@ function ShowListing() {
     fetchListing();
   }, [id]);
 
-  const navigate = useNavigate();
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:8000/api/v1/listings/${id}`);
-      navigate("/"); // Go back to listings page
+      navigate("/");
     } catch (error) {
       console.error("Error deleting listing:", error);
     }
@@ -35,37 +34,59 @@ function ShowListing() {
   if (!listing) return <h2>No listing found</h2>;
 
   return (
-    <div className="showlisting">
-      <h2>Listing Details</h2>
-      <ul>
-        <li>
-          <strong>Title:</strong> {listing.title}
-        </li>
-        <li>
-          <strong>Description:</strong> {listing.description}
-        </li>
-        <li>
-          <strong>Price:</strong> {listing.price}
-        </li>
-        <li>
-          <strong>Location:</strong> {listing.location}
-        </li>
-        <li>
-          <strong>Country:</strong> {listing.country}
-        </li>
-        <li>
-          <img
-            src={listing.image}
-            alt={listing.title}
-            style={{ width: "300px" }}
-          />
-        </li>
-      </ul>
-      <br />
-      <Link to={`/listings/${listing._id}/edit`}>Edit Listing</Link>
-      <button onClick={handleDelete} style={{ marginInline: "10px" }}>
-        Delete Listing
-      </button>
+    <div className="container mt-4">
+      <div className="row justify-content-center">
+        <div className="col-lg-8 col-md-10 col-sm-12">
+          <h2 className="text-center mb-3" style={{ color: "maroon" }}>
+            Listing Details
+          </h2>
+
+          {/* Image */}
+          <div className="text-center mb-4">
+            <img
+              src={listing.image}
+              alt={listing.title}
+              className="img-fluid rounded"
+              style={{ maxHeight: "430px", objectFit: "cover" }}
+            />
+          </div>
+
+          {/* Listing Info */}
+          <ul
+            className="list-unstyled px-md-5 text-secondary "
+            style={{ fontSize: "1.1rem" }}>
+            <li className="mb-2">
+              <strong className="text-dark">Title:</strong> {listing.title}
+            </li>
+            <li className="mb-2">
+              <strong className="text-dark">Description:</strong>{" "}
+              {listing.description}
+            </li>
+            <li className="mb-2">
+              <strong className="text-dark">Price:</strong> ₹{listing.price}
+            </li>
+            <li className="mb-2">
+              <strong className="text-dark">Location:</strong>{" "}
+              {listing.location}
+            </li>
+            <li className="mb-2">
+              <strong className="text-dark">Country:</strong> {listing.country}
+            </li>
+          </ul>
+
+          {/* Buttons */}
+          <div className="d-flex justify-content-center gap-5 mt-4 mb-3">
+            <Link
+              to={`/listings/${listing._id}/edit`}
+              className="btn btn-outline-primary">
+              Edit Listing
+            </Link>
+            <button onClick={handleDelete} className="btn btn-outline-danger">
+              Delete Listing
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

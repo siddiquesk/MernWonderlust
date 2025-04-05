@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 function ListingCreate() {
-  const [cretaelisting, setcretaelisting] = useState({
+  const [createListing, setCreateListing] = useState({
     title: "",
     description: "",
     image: "",
@@ -12,68 +13,156 @@ function ListingCreate() {
   });
 
   const navigate = useNavigate();
+  const formRef = useRef(null); // Bootstrap form validation
 
   const handleChange = (e) => {
-    setcretaelisting({ ...cretaelisting, [e.target.name]: e.target.value });
+    setCreateListing({
+      ...createListing,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post("http://localhost:8000/api/v1/listings", cretaelisting);
-      navigate("/"); // Redirect to listing page
-    } catch (error) {
-      console.error("Error creating listing:", error);
+    const form = formRef.current;
+
+    // Check Bootstrap form validity
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+    } else {
+      try {
+        await axios.post(
+          "http://localhost:8000/api/v1/listings",
+          createListing
+        );
+        navigate("/");
+      } catch (error) {
+        console.error("Error creating listing:", error);
+      }
     }
+
+    // Show Bootstrap validation styles
+    form.classList.add("was-validated");
   };
 
   return (
-    <div className="create">
-      <h2>Create Your Listing</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="title"
-          placeholder="Enter Your Title"
-          value={cretaelisting.title}
-          onChange={handleChange}
-        /> <br /><br />
-        <textarea
-          name="description"
-          placeholder="Enter Your Description"
-          value={cretaelisting.description}
-          onChange={handleChange}
-        /> <br /><br />
-        <input
-          type="text"
-          name="image"
-          placeholder="Enter Image URL"
-          value={cretaelisting.image}
-          onChange={handleChange}
-        /> <br /><br />
-        <input
-          type="number"
-          name="price"
-          placeholder="Enter Your Price"
-          value={cretaelisting.price}
-          onChange={handleChange}
-        /> <br /><br />
-        <input
-          type="text"
-          name="location"
-          placeholder="Enter Your Location"
-          value={cretaelisting.location}
-          onChange={handleChange}
-        /> <br /><br />
-        <input
-          type="text"
-          name="country"
-          placeholder="Enter Your Country"
-          value={cretaelisting.country}
-          onChange={handleChange}
-        /> <br /><br />
-        <button type="submit">Create</button>
-      </form>
+    <div className="container py-4">
+      <h2 className="text-center text-primary mb-2">Create Your Listing</h2>
+      <div className="row justify-content-center">
+        <div className="col-lg-6 col-md-8 col-sm-10">
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            className="needs-validation"
+            noValidate>
+            <div className="mb-3">
+              <label htmlFor="title" className="form-label">
+                Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                className="form-control"
+                placeholder="Add a catchy title"
+                value={createListing.title}
+                onChange={handleChange}
+                required
+              />
+              <div className="invalid-feedback">Title is required.</div>
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">
+                Description
+              </label>
+              <textarea
+                name="description"
+                id="description"
+                className="form-control"
+                placeholder="Enter your description"
+                value={createListing.description}
+                onChange={handleChange}
+                required></textarea>
+              <div className="invalid-feedback">Description is required.</div>
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="image" className="form-label">
+                Image URL
+              </label>
+              <input
+                type="text"
+                name="image"
+                id="image"
+                className="form-control"
+                placeholder="Enter image URL"
+                value={createListing.image}
+                onChange={handleChange}
+                required
+              />
+              <div className="invalid-feedback">Image URL is required.</div>
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="price" className="form-label">
+                Price
+              </label>
+              <input
+                type="number"
+                name="price"
+                id="price"
+                className="form-control"
+                placeholder="Enter price"
+                value={createListing.price}
+                onChange={handleChange}
+                required
+              />
+              <div className="invalid-feedback">Price is required.</div>
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="location" className="form-label">
+                Location
+              </label>
+              <input
+                type="text"
+                name="location"
+                id="location"
+                className="form-control"
+                placeholder="Enter location"
+                value={createListing.location}
+                onChange={handleChange}
+                required
+              />
+              <div className="invalid-feedback">Location is required.</div>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="country" className="form-label">
+                Country
+              </label>
+              <input
+                type="text"
+                name="country"
+                id="country"
+                className="form-control"
+                placeholder="Enter country"
+                value={createListing.country}
+                onChange={handleChange}
+                required
+              />
+              <div className="invalid-feedback">Country is required.</div>
+            </div>
+
+            <div className="text-center">
+              <button type="submit" className="btn btn-success w-50">
+                Create Listing
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

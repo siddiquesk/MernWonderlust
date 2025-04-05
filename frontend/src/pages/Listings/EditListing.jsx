@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 function EditListing() {
-  const [Editlisting, setEditlisting] = useState({
+  const [editListing, setEditListing] = useState({
     title: "",
     description: "",
     image: "",
@@ -13,7 +13,6 @@ function EditListing() {
   });
 
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   useEffect(() => {
@@ -22,94 +21,97 @@ function EditListing() {
         const response = await axios.get(
           `http://localhost:8000/api/v1/listings/${id}`
         );
-        setEditlisting(response.data);
+        setEditListing(response.data);
       } catch (error) {
         console.error("Error fetching listing:", error);
       }
     };
+
     fetchListing();
   }, [id]);
+
+  const handleChange = (e) => {
+    setEditListing({ ...editListing, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.put(
         `http://localhost:8000/api/v1/listings/${id}`,
-        Editlisting
+        editListing
       );
       navigate("/");
     } catch (error) {
       console.error("Error updating listing:", error);
     }
   };
-  const handleChange = (e) => {
-    setEditlisting({ ...Editlisting, [e.target.name]: e.target.value });
-  };
 
   return (
-    <>
-      <div className="editlisting">
-        {" "}
-        <br />
-        <h2>Edit your Listings</h2> <br /> <br />
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="title"
-            placeholder="Enter Your Title"
-            value={Editlisting.title}
-            onChange={handleChange}
-          />{" "}
-          <br />
-          <br />
-          <textarea
-            name="description"
-            placeholder="Enter Your Description"
-            value={Editlisting.description}
-            onChange={handleChange}
-          />{" "}
-          <br />
-          <br />
-          <input
-            type="text"
-            name="image"
-            placeholder="Enter Image URL"
-            value={Editlisting.image}
-            onChange={handleChange}
-          />{" "}
-          <br />
-          <br />
-          <input
-            type="number"
-            name="price"
-            placeholder="Enter Your Price"
-            value={Editlisting.price}
-            onChange={handleChange}
-          />{" "}
-          <br />
-          <br />
-          <input
-            type="text"
-            name="location"
-            placeholder="Enter Your Location"
-            value={Editlisting.location}
-            onChange={handleChange}
-          />{" "}
-          <br />
-          <br />
-          <input
-            type="text"
-            name="country"
-            placeholder="Enter Your Country"
-            value={Editlisting.country}
-            onChange={handleChange}
-          />{" "}
-          <br />
-          <br />
-          <button type="submit">Edit Listings</button>
-        </form>
-      </div>
-    </>
+    <div className="editlisting container mt-4">
+      <h2 className="text-center mb-4 text-primary">Edit Your Listing</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto"
+        style={{ maxWidth: "600px" }}>
+        <input
+          type="text"
+          name="title"
+          className="form-control mb-3"
+          placeholder="Enter Your Title"
+          value={editListing.title}
+          onChange={handleChange}
+        />
+
+        <textarea
+          name="description"
+          className="form-control mb-3"
+          placeholder="Enter Your Description"
+          value={editListing.description}
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="image"
+          className="form-control mb-3"
+          placeholder="Enter Image URL"
+          value={editListing.image}
+          onChange={handleChange}
+        />
+
+        <input
+          type="number"
+          name="price"
+          className="form-control mb-3"
+          placeholder="Enter Your Price"
+          value={editListing.price}
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="location"
+          className="form-control mb-3"
+          placeholder="Enter Your Location"
+          value={editListing.location}
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="country"
+          className="form-control mb-4"
+          placeholder="Enter Your Country"
+          value={editListing.country}
+          onChange={handleChange}
+        />
+
+        <button type="submit" className="btn btn-primary w-100">
+          Update Listing
+        </button>
+      </form>
+    </div>
   );
 }
 
