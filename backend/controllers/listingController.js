@@ -1,10 +1,6 @@
 const Listing = require("../models/listing");
-
-// ================================
-// GET: Fetch all listings
-// Route: GET /api/listings
-// ================================
-const getListings = async (req, res) => {
+const ExpressError = require("../utils/ExpressError");
+const getListings = async (req, res,next) => {
   try {
     const allListings = await Listing.find({});
     if (!allListings) {
@@ -12,7 +8,7 @@ const getListings = async (req, res) => {
     }
     res.status(200).json(allListings);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
 
@@ -20,18 +16,19 @@ const getListings = async (req, res) => {
 // GET: Fetch single listing by ID
 // Route: GET /api/listings/:id
 // ================================
-const showListings = async (req, res) => {
+const showListings = async (req, res, next) => {
   try {
     const { id } = req.params;
     const listing = await Listing.findById(id);
     if (!listing) {
-      return res.status(404).json({ message: "Listing not found" });
+      return next(new ExpressError(404, "Listing not found"));
     }
     res.status(200).json(listing);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
+
 
 // ================================
 // POST: Create a new listing
@@ -41,7 +38,7 @@ const createListings = async (req, res) => {
   try {
     const { image, title, description, price, country, location } = req.body;
 
-    const newListing = new Listing({
+    const dupliacteListing = await Listing.findOne({
       image,
       title,
       description,
@@ -50,16 +47,27 @@ const createListings = async (req, res) => {
       location,
     });
 
+    if(dupliacteListing){
+      return res.status(200).json({message:"this listing is already cretaed by another user"});
+    }
+    const newListing = new Listing({
+      image,
+      title,
+      description,
+      price,
+      country,
+      location,
+    });
     const savedListing = await newListing.save();
+    if (!savedListing) {
+      return res.status(400).json({ message: "Invalid data" });
+    }
     res.status(201).json(savedListing);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// ================================
-// PUT: Edit/Update a listing by ID
-// Route: PUT /api/listings/:id
 // ================================
 const EditListings = async (req, res) => {
   try {
@@ -71,7 +79,7 @@ const EditListings = async (req, res) => {
     });
 
     if (!updateListing) {
-      return res.status(404).json({ message: "Listing not found" });
+      return next(new ExpressError(404, "Listing not updated"));
     }
     res.status(200).json(updateListing);
   } catch (err) {
@@ -86,7 +94,7 @@ const deleteListing = async (req, res) => {
     const deleted = await Listing.findByIdAndDelete(id);
 
     if (!deleted) {
-      return res.status(404).json({ message: "Listing not found" });
+      return next(new ExpressError(404 ,"Listing Not Found"));
     }
 
     res.status(200).json({ message: "Listing deleted successfully" });

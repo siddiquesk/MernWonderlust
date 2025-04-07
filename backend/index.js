@@ -13,7 +13,7 @@ const listingRoutes = require('./routes/listingRouts');
 const PORT = process.env.PORT || 8080;
 // Enable CORS for frontend origin
 app.use(cors({
-  origin: 'http://localhost:5175', // Frontend URL
+  origin: 'http://localhost:5173', // Frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, // Allow cookies/headers
 }));
@@ -21,8 +21,13 @@ app.use(cors({
 // Parse JSON and URL-encoded data from requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// All listing-related routes start with /api/v1
 app.use('/api/v1', listingRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  const { status = 500, message = "Something went wrong!" } = err;
+  res.status(status).json({ message });
+});
 
 app.listen(PORT, () => {
   DbConnection(); // Connect to MongoDB

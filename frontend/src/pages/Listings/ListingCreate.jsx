@@ -11,26 +11,22 @@ function ListingCreate() {
     location: "",
     country: "",
   });
-
   const navigate = useNavigate();
-  const formRef = useRef(null); // Bootstrap form validation
-
+  const formRef = useRef(null); 
   const handleChange = (e) => {
     setCreateListing({
       ...createListing,
       [e.target.name]: e.target.value,
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = formRef.current;
-
     // Check Bootstrap form validity
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() === false) {//field required khali hai submit karne pe ye chalega 
       e.stopPropagation();
     } else {
-      try {
+      try {//sab details fill karne pe ye chalega
         await axios.post(
           "http://localhost:8000/api/v1/listings",
           createListing
