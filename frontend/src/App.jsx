@@ -1,4 +1,5 @@
 import "./App.css";
+import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 import IndexListing from "./pages/Listings/IndexListing";
 import ShowListing from "./pages/Listings/ShowListing";
@@ -17,6 +18,13 @@ function App() {
         <Route path="/listings/:id/edit" element={<EditListing />} />
       </Routes>
       <Footer />
+      <Toaster
+        toastOptions={{
+          style: {
+            transition: "all 0.4s ease-in-out",
+          },
+        }}
+      />
     </>
   );
 }

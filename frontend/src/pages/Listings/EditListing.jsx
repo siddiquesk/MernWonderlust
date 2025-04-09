@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-
+import toast from "react-hot-toast";
 function EditListing() {
   const [editListing, setEditListing] = useState({
     title: "",
@@ -24,6 +24,7 @@ function EditListing() {
         setEditListing(response.data);
       } catch (error) {
         console.error("Error fetching listing:", error);
+        toast.error("Failed to delete listing!");
       }
     };
 
@@ -42,6 +43,7 @@ function EditListing() {
         editListing
       );
       navigate("/");
+      toast.success("Listing update successfully!");
     } catch (error) {
       console.error("Error updating listing:", error);
     }

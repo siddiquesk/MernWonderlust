@@ -27,4 +27,15 @@ const listingSchema = z.object({
     }).positive({ message: "Price must be a positive number" })),    
 });
 
-module.exports = listingSchema;
+const reviewSchema = z.object({
+  rating: z
+    .coerce.number()
+    .min(1, { message: "Rating must be at least 1" })
+    .max(5, { message: "Rating cannot be more than 5" }),
+  comment: z
+    .string()
+    .trim()
+    .min(1, { message: "Comment is required" }),
+});
+
+module.exports = {listingSchema ,reviewSchema};

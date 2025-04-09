@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 function ListingCreate() {
   const [createListing, setCreateListing] = useState({
@@ -11,33 +12,54 @@ function ListingCreate() {
     location: "",
     country: "",
   });
+
   const navigate = useNavigate();
-  const formRef = useRef(null); 
+  const formRef = useRef(null);
+
   const handleChange = (e) => {
     setCreateListing({
       ...createListing,
       [e.target.name]: e.target.value,
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = formRef.current;
-    // Check Bootstrap form validity
-    if (form.checkValidity() === false) {//field required khali hai submit karne pe ye chalega 
+
+    if (form.checkValidity() === false) {
       e.stopPropagation();
     } else {
-      try {//sab details fill karne pe ye chalega
+      try {
         await axios.post(
           "http://localhost:8000/api/v1/listings",
           createListing
         );
-        navigate("/");
+
+        // ✅ Show success toast
+        toast.success("Listing created successfully!", {
+          duration: 2000,
+          position: "top-center",
+          style: {
+            backgroundColor: "#8B0000", // Bootstrap green
+            color: "#fff",
+            fontWeight: "bold",
+            fontSize: "16px",
+            borderRadius: "10px",
+            padding: "15px",
+          },
+        });
+
+        // 🔁 Delay before redirecting to homepage
+        setTimeout(() => {
+          navigate("/");
+        }, 500);
       } catch (error) {
         console.error("Error creating listing:", error);
+        toast.error("Something went wrong!");
       }
     }
 
-    // Show Bootstrap validation styles
     form.classList.add("was-validated");
   };
 

@@ -9,6 +9,7 @@ dotenv.config();
 // Import database connection and routes
 const DbConnection = require('./database/db');
 const listingRoutes = require('./routes/listingRouts');
+const reviewRoutes = require('./routes/reviewRoute');
 // Set port from .env or default to 8080
 const PORT = process.env.PORT || 8080;
 // Enable CORS for frontend origin
@@ -22,7 +23,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/v1', listingRoutes);
-
+app.use('/api/v1', reviewRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   const { status = 500, message = "Something went wrong!" } = err;

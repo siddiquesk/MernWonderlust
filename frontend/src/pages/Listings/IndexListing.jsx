@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 function IndexListing() {
   const [listings, setListings] = useState([]);
@@ -9,13 +10,31 @@ function IndexListing() {
   // useEffect: Fetch listings from backend on mount
   // ==============================================
   useEffect(() => {
+    const isToastShown = sessionStorage.getItem("welcome-toast-shown");
+
     const getAllListingData = async () => {
       try {
         const response = await axios.get(
           "http://localhost:8000/api/v1/listings"
         );
-        setListings(response.data); // Update state with fetched listings
+        setListings(response.data);
+
+        if (!isToastShown) {
+          toast.success("Welcome to  Wonderlust Website!", {
+            duration: 3000,
+            position: "top-center",
+            style: {
+              borderRadius: "10px",
+              color: "#8B0000",
+              fontWeight: "bold",
+              padding: "15px",
+              fontSize: "16px",
+            },
+          });
+          sessionStorage.setItem("welcome-toast-shown", "true");
+        }
       } catch (error) {
+        toast.error("Something went wrong!");
         console.error("Error fetching listings:", error);
       }
     };
@@ -23,11 +42,10 @@ function IndexListing() {
     getAllListingData();
   }, []);
 
-  // ==============================================
-  // JSX to render all listings with links to detail pages
-  // ==============================================
   return (
     <>
+      {/* 👇 Add toaster with smooth animation settings */}
+
       <div className="container-fluid p-3 mt-4">
         <div className="row p-3">
           {listings.map((listing) => (
