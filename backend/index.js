@@ -23,13 +23,31 @@ const DbUrl = process.env.DB_URL;
 /* --------------------------------
    MIDDLEWARE SETUP
 ----------------------------------*/
+CLIENT_URL='https://sufiyan-airbnb-newvilla.onrender.com'
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://sufiyan-airbnb-newvilla.onrender.com'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 
 // Enable CORS for frontend
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.CLIENT_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
+
 
 // Body parser and cookie parser
 app.use(express.json());
