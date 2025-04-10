@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const passport=require('passport');
 const LocalStrategy=require('passport-local');
 const User=require('./models/users');
-
+const PORT = process.env.PORT || 8080;
 // Load environment variables
 dotenv.config();
 
@@ -17,7 +17,7 @@ const listingRoutes = require('./routes/listingRouts');
 const reviewRoutes = require('./routes/reviewRoute');
 const userRoutes=require("./routes/userRoutes");
 // Set port from .env or default to 8080
-const PORT = process.env.PORT || 8080;
+
 
 /* --------------------- MIDDLEWARE SETUP ---------------------- */
 
