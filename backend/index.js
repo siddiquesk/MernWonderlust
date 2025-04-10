@@ -1,84 +1,97 @@
 const express = require('express');
-const app = express();
 const cors = require('cors');
 const dotenv = require('dotenv');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const passport=require('passport');
-const LocalStrategy=require('passport-local');
-const User=require('./models/users');
-const PORT = process.env.PORT || 8080;
-// Load environment variables
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const MongoStore = require('connect-mongo');
+
+const app = express();
 dotenv.config();
 
-// Import database connection and routes
+// Load models, routes, and database
+const User = require('./models/users');
 const DbConnection = require('./database/db');
 const listingRoutes = require('./routes/listingRouts');
 const reviewRoutes = require('./routes/reviewRoute');
-const userRoutes=require("./routes/userRoutes");
-// Set port from .env or default to 8080
+const userRoutes = require('./routes/userRoutes');
 
+const PORT = process.env.PORT || 8080;
+const DbUrl = process.env.DB_URL;
 
-/* --------------------- MIDDLEWARE SETUP ---------------------- */
+/* --------------------------------
+   MIDDLEWARE SETUP
+----------------------------------*/
 
-// Enable CORS for frontend origin (must come early)
+// Enable CORS for frontend
 app.use(cors({
-  origin: 'http://localhost:5173', // Frontend URL
+  origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true, // Allow cookies/headers
+  credentials: true,
 }));
 
-// Parse JSON and URL-encoded data from requests
+// Body parser and cookie parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Parse cookies
 app.use(cookieParser());
 
-// Session middleware (after cookieParser)
-app.use(session({
-  secret: 'my superman key',
+// Session store using MongoDB
+const store = MongoStore.create({
+  mongoUrl: DbUrl,
+  crypto: {
+    secret: process.env.SECRET_KEY,
+  },
+  touchAfter: 24 * 3600,
+});
+
+store.on('error', () => {
+  console.log('Mongo session store error');
+});
+
+// Session options
+const sessionOptions = {
+  store,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { 
+  cookie: {
     httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000 // 1 week
-  }
-}));
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  },
+};
 
-//passport local strategy
+// Initialize session and passport
+app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
+
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-/*
-app.get("/demouser",async(req,res)=>{
-  let fakeuser=new User({
-    email:"aja@gmail.com",
-    username:"lopa",
-  })
- const registeruser=await  User.register(fakeuser,"hello");
- console.log(registeruser.hash);
- res.send(registeruser);
-})
-*/
-
-/* --------------------- ROUTES ---------------------- */
+/* --------------------------------
+   ROUTES
+----------------------------------*/
 app.use('/api/v1', listingRoutes);
 app.use('/api/v1', reviewRoutes);
 app.use('/api/v1', userRoutes);
-/* --------------------- ERROR HANDLER ---------------------- */
+
+/* --------------------------------
+   GLOBAL ERROR HANDLER
+----------------------------------*/
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Something went wrong!" } = err;
+  const { status = 500, message = 'Something went wrong!' } = err;
   res.status(status).json({ message });
 });
 
-/* --------------------- SERVER LISTEN ---------------------- */
+/* --------------------------------
+   START SERVER
+----------------------------------*/
 app.listen(PORT, () => {
-  DbConnection(); // Connect to MongoDB
-  console.log(`✅ Server is running on port ${PORT}`);
+  DbConnection(); // MongoDB connection
+  console.log(`✅ Server running on port ${PORT}`);
 });
 
 

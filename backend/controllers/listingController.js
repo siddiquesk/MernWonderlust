@@ -13,7 +13,7 @@ const getListings = async (req, res, next) => {
     }
     res.status(200).json(allListings);
   } catch (err) {
-    next(err); // Pass error to error-handling middleware
+    next(err);
   }
 };
 
@@ -24,8 +24,6 @@ const getListings = async (req, res, next) => {
 const showListings = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    // Fetch listing by ID and populate reviews
     const listing = await Listing.findById(id).populate("reviews");
 
     if (!listing) {
@@ -34,7 +32,7 @@ const showListings = async (req, res, next) => {
 
     res.status(200).json(listing);
   } catch (err) {
-    next(err); // Send error to error handler
+    next(err);
   }
 };
 
@@ -46,7 +44,6 @@ const createListings = async (req, res) => {
   try {
     const { image, title, description, price, country, location } = req.body;
 
-    // Check for duplicate listing
     const duplicateListing = await Listing.findOne({
       image,
       title,
@@ -62,7 +59,6 @@ const createListings = async (req, res) => {
         .json({ message: "This listing is already created by another user" });
     }
 
-    // Create a new listing
     const newListing = new Listing({
       image,
       title,
@@ -72,9 +68,8 @@ const createListings = async (req, res) => {
       location,
     });
 
-    // Save the listing to DB
     const savedListing = await newListing.save();
-     console.log(savedListing);
+
     if (!savedListing) {
       return res.status(400).json({ message: "Invalid data" });
     }
@@ -93,7 +88,6 @@ const EditListings = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // Update listing and return the new updated object
     const updateListing = await Listing.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
@@ -117,7 +111,6 @@ const deleteListing = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // Delete listing by ID
     const deleted = await Listing.findByIdAndDelete(id);
 
     if (!deleted) {
@@ -130,7 +123,6 @@ const deleteListing = async (req, res, next) => {
   }
 };
 
-// Exporting all controller functions
 module.exports = {
   getListings,
   showListings,
