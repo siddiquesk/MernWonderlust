@@ -19,7 +19,7 @@ function EditListing() {
     const fetchListing = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/listings/${id}`
+          `https://sufiyan-airbnb-vella.onrender.com/api/v1/listings/${id}`
         );
         setEditListing(response.data);
       } catch (error) {
@@ -39,7 +39,7 @@ function EditListing() {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:8000/api/v1/listings/${id}`,
+        `https://sufiyan-airbnb-vella.onrender.com/api/v1/listings/${id}`,
         editListing
       );
       navigate("/");

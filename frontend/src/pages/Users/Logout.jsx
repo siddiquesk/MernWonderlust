@@ -12,9 +12,12 @@ function Logout() {
   useEffect(() => {
     const logoutUser = async () => {
       try {
-        await axios.get("http://localhost:8000/api/v1/logout", {
-          withCredentials: true,
-        });
+        await axios.get(
+          "https://sufiyan-airbnb-vella.onrender.com/api/v1/logout",
+          {
+            withCredentials: true,
+          }
+        );
         setUser(null);
         toast.success("Logged out");
         navigate("/");
@@ -31,4 +34,3 @@ function Logout() {
 }
 
 export default Logout;
-

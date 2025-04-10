@@ -32,7 +32,7 @@ function ListingCreate() {
     } else {
       try {
         await axios.post(
-          "http://localhost:8000/api/v1/listings",
+          "https://sufiyan-airbnb-vella.onrender.com/api/v1/listings",
           createListing
         );
 

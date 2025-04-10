@@ -22,7 +22,7 @@ function Signup() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/signup", register, {
+      const res = await axios.post("https://sufiyan-airbnb-vella.onrender.com/api/v1/signup", register, {
         withCredentials: true,
       });
 
