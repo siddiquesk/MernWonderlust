@@ -74,7 +74,7 @@ const createListings = async (req, res) => {
 
     // Save the listing to DB
     const savedListing = await newListing.save();
-
+     console.log(savedListing);
     if (!savedListing) {
       return res.status(400).json({ message: "Invalid data" });
     }

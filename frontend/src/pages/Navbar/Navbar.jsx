@@ -1,29 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // 👈 auth context import
 
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const { user } = useAuth(); // 👈 user from context
 
-  // Toggle dropdown open/close
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Agar dropdownRef mein kuch hai && click uske bahar hua hai
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false); // dropdown ko close karo
+        setShowDropdown(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    // Cleanup when component unmounts
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  
 
   return (
     <nav className="navbar navbar-expand-lg custom-navbar shadow-sm">
@@ -60,21 +57,30 @@ function Navbar() {
           {/* === Dropdown Menu === */}
           {showDropdown && (
             <div className="dropdown-menu-custom position-absolute end-0 mt-2 p-3 shadow rounded-3 bg-white">
-              <a href="#" className="dropdown-item-custom mb-2 p-2">
-                Sign up
-              </a>
-              <a href="#" className="dropdown-item-custom mb-2 p-2">
-                Log in
-              </a>
-              <Link
-                to="/listings/new"
-                className="dropdown-item-custom mb-2 p-2">
-                Create Listing
-              </Link>
-              <hr className="my-2" />
-              <a href="#" className="dropdown-item-custom p-2">
-                Logout
-              </a>
+              {!user ? (
+                <>
+                  <Link
+                    to={"/signup"}
+                    className="dropdown-item-custom mb-2 p-2">
+                    Sign up
+                  </Link>
+                  <Link to={"/login"} className="dropdown-item-custom mb-2 p-2">
+                    Login
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/listings/new"
+                    className="dropdown-item-custom mb-2 p-2">
+                    Create Listing
+                  </Link>
+                  <hr className="my-2" />
+                  <Link to={"/logout"} className="dropdown-item-custom p-2">
+                    Logout
+                  </Link>
+                </>
+              )}
             </div>
           )}
         </div>
