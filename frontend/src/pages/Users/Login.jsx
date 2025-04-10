@@ -21,7 +21,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("https://sufiyan-airbnb-vella.onrender.com/api/v1/login", user, {
+      const res = await axios.post("https://sufiyan-airbnb-newvilla.onrender.com/api/v1/login", user, {
         withCredentials: true,
       });
 

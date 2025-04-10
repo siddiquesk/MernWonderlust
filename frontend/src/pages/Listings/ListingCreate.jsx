@@ -32,7 +32,7 @@ function ListingCreate() {
     } else {
       try {
         await axios.post(
-          "https://sufiyan-airbnb-vella.onrender.com/api/v1/listings",
+          "https://sufiyan-airbnb-newvilla.onrender.com/api/v1/listings",
           createListing
         );
 

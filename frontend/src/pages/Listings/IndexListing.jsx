@@ -15,7 +15,7 @@ function IndexListing() {
     const getAllListingData = async () => {
       try {
         const response = await axios.get(
-          "https://sufiyan-airbnb-vella.onrender.com/api/v1/listings"
+          "https://sufiyan-airbnb-newvilla.onrender.com/api/v1/listings"
         );
         setListings(response.data);
 

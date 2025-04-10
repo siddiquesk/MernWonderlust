@@ -15,7 +15,7 @@ function ShowListing() {
   const fetchListing = async () => {
     try {
       const response = await axios.get(
-        `https://sufiyan-airbnb-vella.onrender.com/api/v1/listings/${id}`
+        `https://sufiyan-airbnb-newvilla.onrender.com/api/v1/listings/${id}`
       );
       setListing(response.data);
     } catch (error) {
@@ -27,7 +27,7 @@ function ShowListing() {
   const fetchReviews = async () => {
     try {
       const response = await axios.get(
-        `https://sufiyan-airbnb-vella.onrender.com/api/v1/listings/${id}/reviews`
+        `https://sufiyan-airbnb-newvilla.onrender.com/api/v1/listings/${id}/reviews`
       );
       setShowreview(response.data.reviews);
     } catch (err) {
@@ -43,7 +43,7 @@ function ShowListing() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://sufiyan-airbnb-vella.onrender.com/api/v1/listings/${id}`);
+      await axios.delete(`https://sufiyan-airbnb-newvilla.onrender.com/api/v1/listings/${id}`);
       toast.success("Listing deleted successfully!"); // ✅ Toast
       navigate("/");
     } catch (error) {
@@ -55,7 +55,7 @@ function ShowListing() {
   const reviewDelete = async (reviewId) => {
     try {
       await axios.delete(
-        `https://sufiyan-airbnb-vella.onrender.com/api/v1/listings/${id}/reviews/${reviewId}`
+        `https://sufiyan-airbnb-newvilla.onrender.com/api/v1/listings/${id}/reviews/${reviewId}`
       );
       toast.success("your Review deleted!"); // ✅ Toast
       fetchReviews();
@@ -77,7 +77,7 @@ function ShowListing() {
 
     try {
       await axios.post(
-        `https://sufiyan-airbnb-vella.onrender.com/api/v1/listings/${id}/reviews`,
+        `https://sufiyan-airbnb-newvilla.onrender.com/api/v1/listings/${id}/reviews`,
         review
       );
       toast.success("Review add successfully!"); // ✅ Toast

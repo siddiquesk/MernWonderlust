@@ -13,7 +13,7 @@ function Logout() {
     const logoutUser = async () => {
       try {
         await axios.get(
-          "https://sufiyan-airbnb-vella.onrender.com/api/v1/logout",
+          "https://sufiyan-airbnb-newvilla.onrender.com/api/v1/logout",
           {
             withCredentials: true,
           }
